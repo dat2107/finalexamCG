@@ -16,48 +16,60 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
     </head>
-
-    <body>
-        <center>
-            <h1>số thập phân</h1>
-            <label for="tu1">tử số thứ nhất</label>
-            <input type="text" id="tu1" min="1">
-            <label for="mau1">mẫu số thứ nhất</label>
-            <input type="text" id="mau1" min="1">
-            <br>
-            <br>
-            <label for="tu2">tử số thứ hai</label>
-            <input type="text" id="tu2" min="1">
-            <label for="mau2">mẫu số thứ hai</label>
-            <input type="text" id="mau2" min="1">
-            <br>
-            <br>
-            <button onclick="check()">Kiểm tra</button>
-            <p id="result"></p>
-        </center>
-        <script>
-            function sosanh(tu1, mau1, tu2, mau2) {
-                if (mau1 === 0 || mau2 === 0) {
-                    return "Mẫu số không được bằng 0";
-                }
-                if (tu1 * mau2 === tu2 * mau1) {
-                    return "true";
-                } else {
-                    return "false";
-                }
+    <center>
+        <h1>số thập phân</h1>
+        <label for="tu1">tử số thứ nhất</label>
+        <input type="text" id="tu1" min="1">
+        <label for="mau1">mẫu số thứ nhất</label>
+        <input type="text" id="mau1" min="1">
+        <br>
+        <br>
+        <label for="tu2">tử số thứ hai</label>
+        <input type="text" id="tu2" min="1">
+        <label for="mau2">mẫu số thứ hai</label>
+        <input type="text" id="mau2" min="1">
+        <br>
+        <br>
+        <button onclick="check()">Kiểm tra</button>
+        <p id="result"></p>
+    </center>
+    <script>
+        function ucln(a, b) {
+            while (b !== 0) {
+                let temp = b;
+                b = a % b;
+                a = temp;
             }
-            function check() {
-                let tu1 = Number(document.getElementById("tu1").value);
-                let mau1 = Number(document.getElementById("mau1").value);
-                let tu2 = Number(document.getElementById("tu2").value);
-                let mau2 = Number(document.getElementById("mau2").value);
-                let ketQua = sosanh(tu1, mau1, tu2, mau2);
-                document.getElementById("result").innerHTML = ketQua;
+            return Math.abs(a);
+        }
+        function rutGonPhanSo(tu, mau) {
+            const gcd = ucln(tu, mau);
+            tu /= gcd;
+            mau /= gcd;
+            if (mau < 0) {
+                tu = -tu;
+                mau = -mau;
             }
-        </script>
-    </body>
-
-    </html>
+            return { tu: tu, mau: mau };
+        }
+        function sosanh(tu1, mau1, tu2, mau2) {
+            if (mau1 === 0 || mau2 === 0) {
+                return "Mẫu số không được bằng 0";
+            }
+            const p1 = rutGonPhanSo(tu1, mau1);
+            const p2 = rutGonPhanSo(tu2, mau2);
+            const ketQua = (p1.tu === p2.tu && p1.mau === p2.mau) ? "True" : " False";
+            return `${ketQua}`;
+        }
+        function check() {
+            let tu1 = Number(document.getElementById("tu1").value);
+            let mau1 = Number(document.getElementById("mau1").value);
+            let tu2 = Number(document.getElementById("tu2").value);
+            let mau2 = Number(document.getElementById("mau2").value);
+            let ketQua = sosanh(tu1, mau1, tu2, mau2);
+            document.getElementById("result").innerHTML = ketQua;
+        }
+    </script>
 </body>
 
 </html>
