@@ -19,15 +19,15 @@
     <center>
         <h1>số thập phân</h1>
         <label for="tu1">tử số thứ nhất</label>
-        <input type="text" id="tu1" min="1">
+        <input type="number" id="tu1">
         <label for="mau1">mẫu số thứ nhất</label>
-        <input type="text" id="mau1" min="1">
+        <input type="number" id="mau1">
         <br>
         <br>
         <label for="tu2">tử số thứ hai</label>
-        <input type="text" id="tu2" min="1">
+        <input type="number" id="tu2">
         <label for="mau2">mẫu số thứ hai</label>
-        <input type="text" id="mau2" min="1">
+        <input type="number" id="mau2">
         <br>
         <br>
         <button onclick="check()">Kiểm tra</button>
@@ -62,10 +62,18 @@
             return `${ketQua}`;
         }
         function check() {
-            let tu1 = Number(document.getElementById("tu1").value);
-            let mau1 = Number(document.getElementById("mau1").value);
-            let tu2 = Number(document.getElementById("tu2").value);
-            let mau2 = Number(document.getElementById("mau2").value);
+            let tu1 = document.getElementById("tu1").value;
+            let mau1 = document.getElementById("mau1").value;
+            let tu2 = document.getElementById("tu2").value;
+            let mau2 = document.getElementById("mau2").value;
+            if (tu1 === "" || mau1 === "" || tu2 === "" || mau2 === "") {
+                alert("Vui lòng nhập đầy đủ");
+                return;
+            }
+            tu1 = Number(tu1);
+            mau1 = Number(mau1);
+            tu2 = Number(tu2);
+            mau2 = Number(mau2);
             let ketQua = sosanh(tu1, mau1, tu2, mau2);
             document.getElementById("result").innerHTML = ketQua;
         }
