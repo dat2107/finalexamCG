@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <center>
+        <h1>Quản sổ tiết kiệm</h1>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Mã sổ</th>
+                    <th>Loại tiết kiệm</th>
+                    <th>Họ tên KH</th>
+                    <th>CMND</th>
+                    <th>Ngày mở</th>
+                    <th>Số tiền gửi</th>
+                </tr>
+            </thead>
+            <tbody id="table">
+
+            </tbody>
+        </table>
+        <br>
+        <br>
+        <button onclick="addSTK()">Thêm </button>
+        <button onclick="deleteSTK()">Xóa</button>
+    </center>
+    <dialog id="addDialog">
+        <form method="dialog" id="stkForm">
+            <label for="id">Mã sổ</label><br><br>
+            <input type="text" id="id" required><br><br>
+            <label for="loai">Loại tiết kiệm</label><br><br>
+            <input type="text" id="loai" required><br><br>
+            <label for="name">Họ ten kH</label><br><br>
+            <input type="text" id="name" required><br><br>
+            <label for="cmnd">CMND</label><br><br>
+            <input type="number" id="cmnd" required><br><br>
+            <label for="day">ngày mở</label><br><br>
+            <input type="date" id="day" required><br><br>
+            <label for="quantity">Số tiền gửi</label><br><br>
+            <input type="number" id="quantity" required><br><br>
+            <menu>
+                <button type="submit">xác nhận</button>
+                <button type="button" onclick="closeDialog()">Hủy</button>
+            </menu>
+        </form>
+    </dialog>
+    <script>
+        class SoTietKiem {
+            constructor(maSo, loai, hoTen, cmnd, ngayMo, soTien) {
+                this.maSo = maSo;
+                this.loai = loai;
+                this.hoTen = hoTen;
+                this.cmnd = cmnd;
+                this.ngayMo = ngayMo;
+                this.soTien = soTien;
+            }
+        }
+        let danhSach = [
+            new SoTietKiem("A001", "3 tháng", "Nguyễn Văn An", "123456789", "2024-01-15", 5000000),
+            new SoTietKiem("B002", "6 tháng", "Trần Thị Bích", "987654321", "2023-12-10", 8000000),
+            new SoTietKiem("C003", "12 tháng", "Lê Văn Chiến", "111222333", "2024-02-20", 15000000)
+        ];
+        function hienThiBang() {
+            const tbody = document.getElementById("table");
+            tbody.innerHTML = "";
+
+            danhSach.forEach(item => {
+                const row = `<tr>
+                <td>${item.maSo}</td>
+                <td>${item.loai}</td>
+                <td>${item.hoTen}</td>
+                <td>${item.cmnd}</td>
+                <td>${item.ngayMo}</td>
+                <td>${item.soTien}</td>
+            </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+        function validate(maSo, loai, hoTen, cmnd, ngayMo, soTien) {
+            if (!/^[A-Za-z0-9]{1,5}$/.test(maSo)) return "Mã sổ tối đa 5 ký tự (chữ/số)";
+            if (!/^.{1,10}$/.test(loai)) return "Loại tiết kiệm tối đa 10 ký tự";
+            if (!/^.{1,30}$/.test(hoTen)) return "Họ tên tối đa 30 ký tự";
+            if (!/^\d{9,12}$/.test(cmnd)) return "CMND phải là số (9–12 chữ số)";
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(ngayMo)) return "Ngày mở sai định dạng (yyyy-mm-dd)";
+            if (isNaN(soTien) || soTien <= 0) return "Số tiền phải là số dương";
+            return null;
+        }
+        function addSTK() {
+            document.getElementById("stkForm").reset();
+            document.getElementById("addDialog").showModal();
+        }
+        function closeDialog() {
+            document.getElementById("addDialog").close();
+        }
+        function handleAddSTKSubmit() {
+            document.getElementById("stkForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                let maSo = document.getElementById("id").value.trim();
+                let loai = document.getElementById("loai").value.trim();
+                let hoTen = document.getElementById("name").value.trim();
+                let cmnd = document.getElementById("cmnd").value.trim();
+                let ngayMo = document.getElementById("day").value;
+                let soTien = Number(document.getElementById("quantity").value);
+                if (danhSach.some(s => s.maSo === maSo)) {
+                    alert("Mã số đã tồn tại");
+                    return;
+                }
+                const error = validate(maSo, loai, hoTen, cmnd, ngayMo, soTien);
+                if (error) {
+                    alert("Lỗi: " + error);
+                    return;
+                }
+                const so = new SoTietKiem(maSo, loai, hoTen, cmnd, ngayMo, soTien);
+                danhSach.push(so);
+                alert("Thêm thành công!");
+                closeDialog();
+                hienThiBang();
+            });
+        }
+        function deleteSTK() {
+            let ma;
+            let ds;
+            do {
+                ma = prompt("Nhập mã sổ cần xoá:");
+                ds = danhSach.findIndex(s => s.maSo === ma.trim());
+                if (ds === -1) {
+                    alert("Không tìm thấy mã sổ! Vui lòng nhập lại.");
+                }
+            } while (ds === -1);
+            const xacNhan = confirm("Bạn có chắc muốn xoá sổ này?");
+            if (xacNhan) {
+                danhSach.splice(ds, 1);
+                alert("Đã xoá thành công.");
+                hienThiBang();
+            }
+        }
+        handleAddSTKSubmit();
+        hienThiBang();
+    </script>
+</body>
+
+</html>
